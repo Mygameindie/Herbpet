@@ -238,6 +238,7 @@
     const sized = () => { const c = document.createElement('canvas'); c.width = cloth.width; c.height = cloth.height; return c; };
     const hang = sized(), over = sized(), under = sized(), blow = sized(), stiff = sized();
     const legCloth = { leg_L: sized(), leg_R: sized() };
+    const armCloth = { arm_L: sized(), arm_R: sized() };
     let blowFrom = Infinity;
     if (typeof window.drawOutfitOverlay === 'function') {
       window.drawOutfitOverlay(cloth.getContext('2d'), 'stand', 0, 0, cloth.width, cloth.height, it => !it.stiff && !it.blows);
@@ -256,8 +257,12 @@
       for (const id of ['leg_L', 'leg_R']) {
         window.drawOutfitOverlay(legCloth[id].getContext('2d'), 'stand', 0, 0, cloth.width, cloth.height, null, id);
       }
+      // ...and sleeves, one picture per arm.
+      for (const id of ['arm_L', 'arm_R']) {
+        window.drawOutfitOverlay(armCloth[id].getContext('2d'), 'stand', 0, 0, cloth.width, cloth.height, null, id);
+      }
     }
-    pet.body.buildArt(pet.partImgs, cloth, cs, hang, over, under, blow, isFinite(blowFrom) ? blowFrom : null, stiff, null, legCloth);
+    pet.body.buildArt(pet.partImgs, cloth, cs, hang, over, under, blow, isFinite(blowFrom) ? blowFrom : null, stiff, armCloth, legCloth);
   }
 
   // Feed the scene's state to the skeleton.

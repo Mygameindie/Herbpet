@@ -85,7 +85,14 @@
   function itemAvailable(it) {
     if (!it) return false;
     if (it.id === 0 || it.id === "0") return true;
-    return !!(it.img && !it.img._failed);
+    // An item may be only per-leg / per-arm pictures (socks, shoes), so any
+    // piece of art that hasn't failed makes it available.
+    return !!thumbArt(it);
+  }
+  // The picture shown on an item's button: its main art, or else whichever
+  // per-leg / per-arm piece loaded (socks and shoes have no main picture).
+  function thumbArt(it) {
+    return [it.img, it.leg_L, it.leg_R, it.arm_L, it.arm_R].find(a => a && !a._failed) || null;
   }
   function availableItems(key) {
     const cat = window.dressUpCatalog[key];
@@ -165,6 +172,8 @@
           // Optional per-leg pictures (<name>_leg_L.png / _leg_R.png, same
           // canvas as the garment): each swings with its own leg.
           leg_L: img(`${it.prefix}_leg_L.png`), leg_R: img(`${it.prefix}_leg_R.png`),
+          // Likewise sleeves: <name>_arm_L.png / _arm_R.png swing with each arm.
+          arm_L: img(`${it.prefix}_arm_L.png`), arm_R: img(`${it.prefix}_arm_R.png`),
           hangs: it.hangs === undefined ? c.hangs : !!it.hangs,
           // `stiff`: one solid piece (a sports bra) that would tear if cut up
           // along the body: kept whole on the body, over the chest.
@@ -401,9 +410,9 @@
       icon.textContent = "🚫";
       icon.style.cssText = "flex:1;display:flex;align-items:center;font-size:24px;opacity:.7;";
       b.appendChild(icon);
-    } else if (it.img && !it.img._failed) {
+    } else if (thumbArt(it)) {
       const im = document.createElement("img");
-      im.src = it.img.src;
+      im.src = thumbArt(it).src;
       im.alt = it.label || "";
       im.draggable = false;
       im.style.cssText = "flex:1;width:48px;height:48px;object-fit:contain;";
@@ -558,7 +567,7 @@
   };
 
   // `only` (optional): draw just the items it returns true for.
-  // `layer` (optional): 'over', 'under', 'leg_L' or 'leg_R' draws those extra layers instead.
+  // `layer` (optional): 'over', 'under', 'leg_L', 'leg_R', 'arm_L' or 'arm_R' draws those extra layers instead.
   window.drawOutfitOverlay = function (ctx, state, x, y, w, h, only, layer) {
     const catalog = window.dressUpCatalog || {};
     let drew = false;
@@ -566,7 +575,7 @@
       const id = (window.selectedClothes && window.selectedClothes[k]) ?? 0;
       if (id === 0 || id === "0") return;
       const it = catalog[k] && catalog[k].items && catalog[k].items[id];
-      if (!it || !it.img || it.img._failed) return;
+      if (!it) return;
       if (only && !only(it)) return;
       const src = layer ? it[layer] : it.img;
       if (!src || src._failed) return;

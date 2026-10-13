@@ -72,7 +72,10 @@ window.OUTFIT_PRESETS = [
       window.dressUpCatalog[category].items) || null;
     if (!items) return id;
     const it = items[id];
-    return (it && (!it.img || !it.img._failed)) ? id : 0;
+    if (!it) return 0;
+    // Available while any of its pictures (main, per-leg, per-arm) hasn't failed.
+    const art = [it.img, it.leg_L, it.leg_R, it.arm_L, it.arm_R];
+    return art.some(a => a && !a._failed) ? id : 0;
   }
 
   // Apply a full preset. Every category not named by the preset is cleared, so
