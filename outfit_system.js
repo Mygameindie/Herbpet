@@ -162,6 +162,9 @@
         if (it) catalog[c.key].items[it.id] = {
           id: it.id, label: it.label, img: img(`${it.prefix}.png`),
           over: img(`${it.prefix}_over.png`), under: img(`${it.prefix}_under.png`),
+          // Optional per-leg pictures (<name>_leg_L.png / _leg_R.png, same
+          // canvas as the garment): each swings with its own leg.
+          leg_L: img(`${it.prefix}_leg_L.png`), leg_R: img(`${it.prefix}_leg_R.png`),
           hangs: it.hangs === undefined ? c.hangs : !!it.hangs,
           // `stiff`: one solid piece (a sports bra) that would tear if cut up
           // along the body: kept whole on the body, over the chest.
@@ -555,7 +558,7 @@
   };
 
   // `only` (optional): draw just the items it returns true for.
-  // `layer` (optional): 'over' or 'under' draws those extra layers instead.
+  // `layer` (optional): 'over', 'under', 'leg_L' or 'leg_R' draws those extra layers instead.
   window.drawOutfitOverlay = function (ctx, state, x, y, w, h, only, layer) {
     const catalog = window.dressUpCatalog || {};
     let drew = false;

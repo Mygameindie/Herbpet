@@ -633,7 +633,7 @@
     // stiff (optional): garments kept whole over the chest (a top): over the
     // chest they go on the body's over-the-chest layer, but their sleeves and
     // anything else on the arms, legs or head still go with those parts.
-    buildArt(imgs, cloth, cs, hang, over, under, blow, blowFrom, stiff, armCloth) {
+    buildArt(imgs, cloth, cs, hang, over, under, blow, blowFrom, stiff, armCloth, legCloth) {
       const CW = Math.round(CFG.SRC_W * cs), CH = Math.round(CFG.SRC_H * cs);
       const mk = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, w); c.height = Math.max(1, h); return c; };
       const mkRead = (w, h) => { const c = mk(w, h); return { c, x: c.getContext('2d', { willReadFrequently: true }) }; };
@@ -748,6 +748,9 @@
           // ...and put on top of the limb that carries them.
           putCarry();
         }
+        // A garment's own picture of this leg (<name>_leg_L/_leg_R.png): drawn
+        // on the leg, under whatever else is cut onto it, so it swings with it.
+        if (legCloth && legCloth[part.id]) art.x.drawImage(legCloth[part.id], 0, 0);
         let box = bboxOf(art.x);
 
         // The clothes that belong to this part.
