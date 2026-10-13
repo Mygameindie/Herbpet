@@ -30,7 +30,7 @@ window.OUTFIT_PRESETS = [
   {
     name: "Casual",
     emoji: "👕",
-    clothes: { top: "top1", bottom: "pants1", bottomUnderwear: "boxers1", apron: "apron1" },
+    clothes: { top: "top1", bottom: "pants1", bottomUnderwear: "boxers1", apron: "apron1", socks: "socks1", shoes: "shoes1" },
   },
   {
     name: "Comfy",

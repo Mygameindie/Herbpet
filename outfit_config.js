@@ -97,6 +97,8 @@ window.OUTFIT_CONFIG = {
     bottom: "pants1",
     bottomUnderwear: "boxers1",
     apron: "apron1",
+    socks: "socks1",
+    shoes: "shoes1",
   },
 
 };
