@@ -74,7 +74,7 @@ window.OUTFIT_CONFIG = {
   // -------------------------------------------------------------------------
   pet: {
     topUnderwear:      ["topunderwear1", "topunderwear2", "topunderwear3", "topunderwear4"],
-    bottomUnderwear:   [{ id: "bottomunderwear1", hangs: true }, "bottomunderwear2", "bottomunderwear3", "bottomunderwear4"],
+    bottomUnderwear:   [{ id: "bottomunderwear1", hangs: true }, "bottomunderwear2", "bottomunderwear3", "bottomunderwear4" ,{ id: "boxers1", hangs: true }],
     onepieceUnderwear: ["onepieceunderwear1"],
     top:               [{ id: "top1", stiff: true }],
     bottom:            ["pants1", { id: "skirt1", blows: true }],
@@ -91,7 +91,7 @@ window.OUTFIT_CONFIG = {
 
   // What the pet is wearing on a fresh start. Anything left out starts as None.
   defaults: {
-    bottomUnderwear: "bottomunderwear1",
+    bottomUnderwear: "boxers1",
     dress: "dress1",
     hat: "hat1",
   },
