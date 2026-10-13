@@ -9,7 +9,7 @@
 //    1. Add an object to window.OUTFIT_PRESETS.
 //    2. `clothes` maps a category -> the item id from outfit_config.js.
 //       Categories: topUnderwear, bottomUnderwear, onepieceUnderwear,
-//                   top, bottom, dress, socks, shoes, hat.
+//                   top, apron, bottom, dress, socks, shoes, hat.
 //       Any category you leave out is treated as "None" (taken off).
 //    3. `colors` is OPTIONAL. Map a category -> a color name:
 //       Original, Red, Orange, Yellow, Green, Cyan, Blue, Purple, Pink.
@@ -30,17 +30,17 @@ window.OUTFIT_PRESETS = [
   {
     name: "Casual",
     emoji: "👕",
-    clothes: { bottomUnderwear: "bottomunderwear1", dress: "dress1", hat: "hat1" },
+    clothes: { top: "top1", bottom: "pants1", bottomUnderwear: "boxers1", apron: "apron1" },
   },
   {
     name: "Comfy",
     emoji: "🩲",
-    clothes: { topUnderwear: "topunderwear1", bottomUnderwear: "bottomunderwear1" },
+    clothes: { bottomUnderwear: "boxers1" },
   },
   {
     name: "Swimsuit",
     emoji: "🩱",
-    clothes: { topUnderwear: "topunderwear1", bottomUnderwear: "bottomunderwear1" },
+    clothes: { bottomUnderwear: "boxers2" },
   },
   {
     name: "Birthday Suit",
