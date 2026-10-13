@@ -633,7 +633,7 @@
     // stiff (optional): garments kept whole over the chest (a top): over the
     // chest they go on the body's over-the-chest layer, but their sleeves and
     // anything else on the arms, legs or head still go with those parts.
-    buildArt(imgs, cloth, cs, hang, over, under, blow, blowFrom, stiff, armCloth, legCloth) {
+    buildArt(imgs, cloth, cs, hang, over, under, blow, blowFrom, stiff, armCloth, legCloth, blowOver) {
       const CW = Math.round(CFG.SRC_W * cs), CH = Math.round(CFG.SRC_H * cs);
       const mk = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, w); c.height = Math.max(1, h); return c; };
       const mkRead = (w, h) => { const c = mk(w, h); return { c, x: c.getContext('2d', { willReadFrequently: true }) }; };
@@ -906,6 +906,15 @@
           for (const o of regionParts) if (!o.offset) shape(st.x, o.region);
         }
         t.x.drawImage(st.c, 0, 0);
+        // A blowing garment worn above the stiff one (an apron over a shirt):
+        // its part above the waistband goes over the shirt too (below the
+        // waistband it is the skirt part, moved over the shirt further down).
+        if (blowOver && blowMask) {
+          const bib = mkRead(CW, CH);
+          bib.x.drawImage(blow, 0, 0);
+          bib.x.clearRect(0, blowY, CW, CH - blowY);
+          t.x.drawImage(bib.c, 0, 0);
+        }
         if (armArt && over) t.x.drawImage(over, 0, 0);
         overAll = t.c;
       }
@@ -923,6 +932,10 @@
           ox: pv.x * cs - b.x0, oy: pv.y * cs - b.y0,
           restAngle: Math.atan2(ch.y - pv.y, ch.x - pv.x),
         });
+        if (blowOver) {
+          const si = out.findIndex(o => o.id === 'skirt'), bi = out.findIndex(o => o.id === 'body_over');
+          if (si >= 0 && bi > si) { const [sk] = out.splice(si, 1); out.splice(bi, 0, sk); }
+        }
       }
       // Sleeves: each arm's clothing is its own picture, drawn above the body and
       // turned with that arm (nothing is cut out of the garments).

@@ -262,7 +262,18 @@
         window.drawOutfitOverlay(armCloth[id].getContext('2d'), 'stand', 0, 0, cloth.width, cloth.height, null, id);
       }
     }
-    pet.body.buildArt(pet.partImgs, cloth, cs, hang, over, under, blow, isFinite(blowFrom) ? blowFrom : null, stiff, armCloth, legCloth);
+    // A blowing garment worn above a stiff one (an apron over a shirt) has to
+    // be drawn over it too, so compare the layers (z) of what is worn.
+    let stiffZ = -Infinity, blowZ = Infinity;
+    const catalog = window.dressUpCatalog || {}, worn = window.selectedClothes || {};
+    for (const k of Object.keys(worn)) {
+      const it = catalog[k] && catalog[k].items && catalog[k].items[worn[k]];
+      if (!it) continue;
+      if (it.stiff) stiffZ = Math.max(stiffZ, catalog[k].z || 0);
+      if (it.blows) blowZ = Math.min(blowZ, catalog[k].z || 0);
+    }
+    const blowOver = isFinite(stiffZ) && blowZ > stiffZ;
+    pet.body.buildArt(pet.partImgs, cloth, cs, hang, over, under, blow, isFinite(blowFrom) ? blowFrom : null, stiff, armCloth, legCloth, blowOver);
   }
 
   // Feed the scene's state to the skeleton.
