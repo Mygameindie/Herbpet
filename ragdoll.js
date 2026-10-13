@@ -780,7 +780,7 @@
               w.x.drawImage(blowMask, 0, 0);
               // The part of a dress above its waist that sits on the chest goes
               // with the chest, or the bare chest is drawn over the dress.
-              if (part.offset) {
+              if (part.offset && !blowOver) {
                 const t = mkRead(CW, CH);
                 t.x.drawImage(blow, 0, 0);
                 t.x.clearRect(0, blowY, CW, CH - blowY);
@@ -816,7 +816,9 @@
             }
             // ...and a blowing skirt's waistband. (Below that it is the skirt
             // part, built after this loop.)
-            if (blowMask) {
+            // (Not when it is drawn over a stiff garment: its upper part is
+            // then in the over layer, see body_over below.)
+            if (blowMask && !blowOver) {
               const t = mkRead(CW, CH);
               t.x.drawImage(blow, 0, 0);
               // Cut along the line, not by the skirt's own soft edge, or a
