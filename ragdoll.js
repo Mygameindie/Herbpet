@@ -817,7 +817,7 @@
             // ...and a blowing skirt's waistband. (Below that it is the skirt
             // part, built after this loop.)
             // (Not when it is drawn over a stiff garment: its upper part is
-            // then in the over layer, see body_over below.)
+            // then its own part, apron_top, drawn last.)
             if (blowMask && !blowOver) {
               const t = mkRead(CW, CH);
               t.x.drawImage(blow, 0, 0);
@@ -908,15 +908,6 @@
           for (const o of regionParts) if (!o.offset) shape(st.x, o.region);
         }
         t.x.drawImage(st.c, 0, 0);
-        // A blowing garment worn above the stiff one (an apron over a shirt):
-        // its part above the waistband goes over the shirt too (below the
-        // waistband it is the skirt part, moved over the shirt further down).
-        if (blowOver && blowMask) {
-          const bib = mkRead(CW, CH);
-          bib.x.drawImage(blow, 0, 0);
-          bib.x.clearRect(0, blowY, CW, CH - blowY);
-          t.x.drawImage(bib.c, 0, 0);
-        }
         if (armArt && over) t.x.drawImage(over, 0, 0);
         overAll = t.c;
       }
@@ -934,10 +925,6 @@
           ox: pv.x * cs - b.x0, oy: pv.y * cs - b.y0,
           restAngle: Math.atan2(ch.y - pv.y, ch.x - pv.x),
         });
-        if (blowOver) {
-          const si = out.findIndex(o => o.id === 'skirt'), bi = out.findIndex(o => o.id === 'body_over');
-          if (si >= 0 && bi > si) { const [sk] = out.splice(si, 1); out.splice(bi, 0, sk); }
-        }
       }
       // Sleeves: each arm's clothing is its own picture, drawn above the body and
       // turned with that arm (nothing is cut out of the garments).
@@ -957,6 +944,27 @@
           ox: pv.x * cs - b.x0, oy: pv.y * cs - b.y0,
           restAngle: Math.atan2(ch.y - pv.y, ch.x - pv.x),
         });
+      }
+      // A blowing garment worn above the stiff ones (an apron over a shirt): its
+      // part above the waistband and its skirt go over the sleeves too, so
+      // they come last. (Below the waistband it is the skirt part.)
+      if (blowOver && blowMask) {
+        const bib = mkRead(CW, CH);
+        bib.x.drawImage(blow, 0, 0);
+        bib.x.clearRect(0, blowY, CW, CH - blowY);
+        const bb = bboxOf(bib.x);
+        if (bb) {
+          const c = mk(bb.x1 - bb.x0, bb.y1 - bb.y0);
+          c.getContext('2d').drawImage(bib.c, -bb.x0, -bb.y0);
+          const pv = CFG.particles.N, ch = CFG.particles.P;
+          out.push({
+            id: 'apron_top', pivot: 'N', child: 'P', canvas: c,
+            ox: pv.x * cs - bb.x0, oy: pv.y * cs - bb.y0,
+            restAngle: Math.atan2(ch.y - pv.y, ch.x - pv.x),
+          });
+        }
+        const si = out.findIndex(o => o.id === 'skirt');
+        if (si >= 0) out.push(out.splice(si, 1)[0]);
       }
       this.parts = out;
       this.artScale = cs;
